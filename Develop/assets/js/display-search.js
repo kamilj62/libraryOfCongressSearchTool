@@ -30,30 +30,52 @@ function searchApi(searchTerm, format) {
 	console.log('searchTerm:', searchTerm);
 	console.log('format:', format);
   
-	// TODO: Build the request URL
-	var apiUrl = "https://www.loc.gov/search/?q=" + searchTerm + "&format=" + format;
-	console.log(apiUrl);
-  
-	// TODO: Make a fetch to the request URL and display the results
-	fetch(apiUrl)
-	  .then(function (response) {
+// TODO: Build the request URL
+var apiUrl = "https://www.loc.gov/"+ format +"/?q=" + searchTerm + "&fo=json";
+console.log(apiUrl);
+
+// TODO: Make a fetch to the request URL and display the results
+fetch(apiUrl)
+  .then(function (response) {
+	if (response.ok) {
+		return response.json();
+	} else {
+		throw new Error('Error: ' + response.statusText);
+	}
+  })
+	.then(function (response) {
 		console.log(response);
-		if (response.ok) {
-			return response;
-		} else {
-			throw new Error('Error: ' + response.statusText);
+		console.log(response.featured_items);
+		
+		var results = response.featured_items;
+
+			for (let i = 0; i < results.length; i++) {
+				var newElement = document.createElement('div');
+				newElement.textContent = results[i].title;
+				resultContentEl.appendChild(newElement);
+			}
+		resultTextEl.textContent = searchTerm + " in " + format
+	})
+}
+
+	function handleNewSearch(event) {
+		event.preventDefault();
+
+		// TODO: Collect values entered by user
+		var search = document.querySelector('#search-input').value;
+		var format = document.querySelector('#format-input').value;
+		
+		// TODO: Exit if user did not enter a search value
+		if ((!search || !format)) {
+			alert("No repositories found.");
+			return;
 		}
-	  })
-}
-function handleNewSearch(event) {
-	event.preventDefault();
+			
+		
 
-	// TODO: Collect values entered by user
-
-	// TODO: Exit if user did not enter a search value
-
-	// TODO: Invoke the searchApi function, passing as arguments the values collected from the user
+		// TODO: Invoke the searchApi function, passing as arguments the values collected from the user
+		searchApi(search, format);
 }
 
-// TODO: Add a 'submit' event listener to the form with id "search-form". A 'submit' event will trigger the 'handleNewSearch' function
+//TODO: Add a 'submit' event listener to the form with id "search-form". A 'submit' event will trigger the 'handleNewSearch' function
 searchFormEl.addEventListener('submit', handleNewSearch);
