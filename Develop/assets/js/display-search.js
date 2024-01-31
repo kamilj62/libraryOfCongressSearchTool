@@ -46,6 +46,9 @@ fetch(apiUrl)
 	.then(function (response) {
 		console.log(response);
 		console.log(response.featured_items);
+
+		// Clear results before running a new one
+		resultContentEl.textContent = "";
 		
 		var results = response.featured_items;
 
@@ -69,9 +72,7 @@ fetch(apiUrl)
 		if ((!search || !format)) {
 			alert("No repositories found.");
 			return;
-		}
-			
-		
+		}	
 
 		// TODO: Invoke the searchApi function, passing as arguments the values collected from the user
 		searchApi(search, format);
